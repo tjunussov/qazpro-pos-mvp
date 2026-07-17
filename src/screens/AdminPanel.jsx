@@ -247,7 +247,7 @@ export default function AdminPanel({
   onDeleteStaff,
   checks,
 }) {
-  const [tab, setTab] = useState('catalog')
+  const [tab, setTab] = useState('reports')
 
   return (
     <div className="admin-screen">
