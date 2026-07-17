@@ -17,7 +17,11 @@ Built so far (all in-memory, no backend, no persistence — resets on refresh):
 3. Order list: close button, table #, order start time
 4. Kitchen dashboard
 5. Waiter flow
-6. Admin panel — catalog CRUD (live-reflected in Menu), staff CRUD (shared by Login/Waiter Select), sales reports
+6. Admin panel — catalog CRUD (live-reflected in Menu), staff CRUD (shared by Login/Waiter Select), sales reports (dashboard-first)
+7. Checkout gated behind kitchen confirmation (send → kitchen marks Ready → checkout unlocks)
+8. Selectable modifiers with price deltas (e.g. Extra Cheese +$5)
+9. To Go section on Tables screen (delivery/pickup orders, reuses table/cart/kitchen/payment logic)
+10. Mobile-first waiter ordering screen (narrow list + expandable bottom cart)
 
 ## Roadmap (not started)
 
