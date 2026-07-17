@@ -2,6 +2,7 @@ import { useState } from 'react'
 import './App.css'
 import Login from './screens/Login'
 import Menu from './screens/Menu'
+import WaiterMenu from './screens/WaiterMenu'
 import Tables from './screens/Tables'
 import Payment from './screens/Payment'
 import History from './screens/History'
@@ -123,10 +124,10 @@ export default function App() {
     return <Login staff={staff} onLogin={login} />
   }
 
-  const renderCashier = () => {
+  const renderOrderFlow = (MenuComponent) => {
     if (screen === 'menu' && activeTable) {
       return (
-        <Menu
+        <MenuComponent
           cart={activeTable.cart}
           tableLabel={tableLabel}
           startedAt={activeTable.startedAt}
@@ -154,9 +155,9 @@ export default function App() {
   return (
     <div className="app-shell">
       <div className="app-content">
-        {role === 'cashier' && renderCashier()}
+        {role === 'cashier' && renderOrderFlow(Menu)}
         {role === 'kitchen' && <KitchenDashboard orders={kitchenOrders} onReady={markOrderReady} />}
-        {role === 'waiter' && (waiterName ? renderCashier() : <WaiterSelect staff={staff} onSelect={setWaiterName} />)}
+        {role === 'waiter' && (waiterName ? renderOrderFlow(WaiterMenu) : <WaiterSelect staff={staff} onSelect={setWaiterName} />)}
         {role === 'admin' && (
           <AdminPanel
             catalog={catalog}
