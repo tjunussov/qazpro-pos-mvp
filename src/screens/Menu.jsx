@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { CATEGORIES, cartTotal } from '../data'
 
-export default function Menu({ cart, onAddItem, onChangeQty, onClear }) {
+export default function Menu({ cart, onAddItem, onChangeQty, onClear, onBack }) {
   const [activeCat, setActiveCat] = useState('Beverages')
   const total = cartTotal(cart)
 
@@ -9,6 +9,7 @@ export default function Menu({ cart, onAddItem, onChangeQty, onClear }) {
     <div className="pos">
       <div className="menu">
         <div className="tabs">
+          <button className="back-btn" onClick={onBack}>←</button>
           {Object.keys(CATEGORIES).map((cat) => (
             <button
               key={cat}
