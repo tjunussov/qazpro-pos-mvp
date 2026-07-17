@@ -2,6 +2,28 @@ import { useState } from 'react'
 import { cartTotal, resolveCartItem } from '../data'
 import ModifierPicker from './ModifierPicker'
 
+const buildRows = (allItems, cart, query) => {
+  const seen = new Set()
+  const cartRows = []
+  for (let i = cart.length - 1; i >= 0; i--) {
+    const line = cart[i]
+    const baseId = line.id.split('__')[0]
+    if (seen.has(baseId)) continue
+    const catalogItem = allItems.find((it) => it.id === baseId)
+    if (!catalogItem) continue
+    seen.add(baseId)
+    cartRows.push({ catalogItem, cartLine: line })
+  }
+
+  const q = query.trim().toLowerCase()
+  const restRows = allItems
+    .filter((it) => !seen.has(it.id))
+    .filter((it) => !q || it.name.toLowerCase().includes(q))
+    .map((it) => ({ catalogItem: it, cartLine: null }))
+
+  return [...cartRows, ...restRows]
+}
+
 export default function WaiterMenu({
   cart,
   tableLabel,
@@ -17,14 +39,16 @@ export default function WaiterMenu({
   canCheckout,
 }) {
   const [pickerItem, setPickerItem] = useState(null)
-  const [cartOpen, setCartOpen] = useState(false)
+  const [query, setQuery] = useState('')
   const total = cartTotal(cart)
-  const itemCount = cart.reduce((sum, i) => sum + i.qty, 0)
   const startedLabel = startedAt
     ? new Date(startedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     : null
 
-  const handleRowClick = (item) => {
+  const allItems = Object.values(categories).flat()
+  const rows = buildRows(allItems, cart, query)
+
+  const handleRowTap = (item) => {
     if (item.modifiers.length > 0) {
       setPickerItem(item)
     } else {
@@ -47,67 +71,67 @@ export default function WaiterMenu({
         </div>
       </div>
 
+      <input
+        className="waiter-search"
+        placeholder="Search menu…"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+      />
+
       <div className="waiter-list">
-        {Object.entries(categories).map(([cat, items]) => (
-          <div key={cat} className="waiter-category">
-            <h3>{cat}</h3>
-            {items.map((item) => (
-              <button key={item.id} className="waiter-item-row" onClick={() => handleRowClick(item)}>
-                <span className="waiter-item-name">{item.name}</span>
-                {item.modifiers.length > 0 && (
-                  <span className="tile-modifiers">+ {item.modifiers.map((m) => m.name).join(', ')}</span>
-                )}
-                <span className="waiter-item-price">${item.price.toFixed(2)}</span>
+        {rows.map(({ catalogItem, cartLine }) => {
+          const inCart = !!cartLine
+          return (
+            <div key={catalogItem.id} className={`waiter-row ${inCart ? 'in-cart' : ''}`}>
+              <button className="waiter-row-main" onClick={() => handleRowTap(catalogItem)}>
+                <span className="waiter-item-name">
+                  {catalogItem.name}
+                  {inCart && cartLine.selectedModifiers?.length > 0 && (
+                    <span className="waiter-row-mods"> · {cartLine.selectedModifiers.map((m) => m.name).join(', ')}</span>
+                  )}
+                  {!inCart && catalogItem.modifiers.length > 0 && (
+                    <span className="tile-modifiers">+ {catalogItem.modifiers.map((m) => m.name).join(', ')}</span>
+                  )}
+                </span>
+                <span className="waiter-item-price">
+                  ${(inCart ? cartLine.price * cartLine.qty : catalogItem.price).toFixed(2)}
+                </span>
               </button>
-            ))}
-          </div>
-        ))}
+              {inCart && (
+                <div className="waiter-row-stepper">
+                  <button onClick={() => onChangeQty(cartLine.id, -1)}>−</button>
+                  <span>{cartLine.qty}</span>
+                  <button onClick={() => onChangeQty(cartLine.id, 1)}>+</button>
+                </div>
+              )}
+            </div>
+          )
+        })}
+        {rows.length === 0 && <p className="empty">No items match "{query}"</p>}
       </div>
 
-      <button className="waiter-cart-bar" onClick={() => setCartOpen((v) => !v)} disabled={!cart.length}>
-        <span>{itemCount} item{itemCount === 1 ? '' : 's'}</span>
-        <span>${total.toFixed(2)}</span>
-        <span>{cartOpen ? '▾' : '▴'}</span>
-      </button>
-
-      {cartOpen && (
-        <div className="waiter-cart-drawer">
-          <div className="waiter-cart-items">
-            {cart.map((i) => (
-              <div key={i.id} className="basket-row">
-                <div className="basket-row-name">
-                  {i.name}
-                  {i.selectedModifiers?.length > 0 && (
-                    <div className="basket-row-mods">{i.selectedModifiers.map((m) => m.name).join(', ')}</div>
-                  )}
-                </div>
-                <div className="basket-row-controls">
-                  <button onClick={() => onChangeQty(i.id, -1)}>−</button>
-                  <span>{i.qty}</span>
-                  <button onClick={() => onChangeQty(i.id, 1)}>+</button>
-                </div>
-                <div className="basket-row-price">${(i.price * i.qty).toFixed(2)}</div>
-              </div>
-            ))}
-          </div>
-          <div className="basket-footer">
-            <button className="clear-btn" onClick={onClear} disabled={!cart.length}>Clear</button>
-            {canCheckout ? (
-              <button className="charge-btn" onClick={onCheckout}>
-                Checkout ${total.toFixed(2)}
-              </button>
-            ) : kitchenStatus === 'pending' ? (
-              <button className="kitchen-btn" disabled>
-                Waiting for kitchen…
-              </button>
-            ) : (
-              <button className="kitchen-btn" disabled={!cart.length} onClick={onSendToKitchen}>
-                Send to Kitchen · ${total.toFixed(2)}
-              </button>
-            )}
-          </div>
+      <div className="waiter-footer">
+        <button className="clear-btn" onClick={onClear} disabled={!cart.length}>
+          Clear
+        </button>
+        <div className="total-row">
+          <span>Total</span>
+          <span>${total.toFixed(2)}</span>
         </div>
-      )}
+        {canCheckout ? (
+          <button className="charge-btn" onClick={onCheckout}>
+            Checkout ${total.toFixed(2)}
+          </button>
+        ) : kitchenStatus === 'pending' ? (
+          <button className="kitchen-btn" disabled>
+            Waiting for kitchen…
+          </button>
+        ) : (
+          <button className="kitchen-btn" disabled={!cart.length} onClick={onSendToKitchen}>
+            Send to Kitchen · ${total.toFixed(2)}
+          </button>
+        )}
+      </div>
 
       {pickerItem && (
         <ModifierPicker item={pickerItem} onConfirm={confirmModifiers} onCancel={() => setPickerItem(null)} />

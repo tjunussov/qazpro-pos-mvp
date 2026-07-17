@@ -86,13 +86,13 @@ export default function Menu({ cart, tableLabel, startedAt, categories, onAddIte
           ))}
         </div>
         <div className="basket-footer">
+          <button className="clear-btn" onClick={onClear} disabled={!cart.length}>
+            Clear
+          </button>
           <div className="total-row">
             <span>Total</span>
             <span>${total.toFixed(2)}</span>
           </div>
-          <button className="clear-btn" onClick={onClear} disabled={!cart.length}>
-            Clear
-          </button>
           {canCheckout ? (
             <button className="charge-btn" onClick={onCheckout}>
               Checkout ${total.toFixed(2)}

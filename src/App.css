@@ -889,28 +889,44 @@
   margin-top: 2px;
 }
 
+.waiter-search {
+  flex-shrink: 0;
+  margin: 0 16px 8px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: none;
+  background: #2b2e3a;
+  color: #fff;
+  font-size: 15px;
+}
+
 .waiter-list {
   flex: 1;
   overflow-y: auto;
-  padding: 0 16px 16px;
+  padding: 0 16px;
 }
 
-.waiter-category h3 {
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: #9aa0b4;
-  margin: 18px 0 8px;
-}
-
-.waiter-item-row {
+.waiter-row {
   display: flex;
   align-items: center;
   gap: 8px;
-  width: 100%;
-  padding: 14px 4px;
-  border: none;
   border-bottom: 1px solid #2b2e3a;
+}
+
+.waiter-row.in-cart {
+  background: #26304a;
+  border-radius: 10px;
+  border-bottom-color: transparent;
+  margin: 4px 0;
+}
+
+.waiter-row-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 8px;
+  border: none;
   background: none;
   color: #fff;
   font-size: 15px;
@@ -922,54 +938,46 @@
   flex: 1;
 }
 
+.waiter-row-mods {
+  color: #9aa0b4;
+  font-size: 13px;
+}
+
 .waiter-item-price {
   color: #9aa0b4;
   font-weight: 600;
 }
 
-.waiter-cart-bar {
+.waiter-row.in-cart .waiter-item-price {
+  color: #fff;
+}
+
+.waiter-row-stepper {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  flex-shrink: 0;
-  padding: 16px;
+  gap: 6px;
+  padding-right: 8px;
+}
+
+.waiter-row-stepper button {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
   border: none;
   background: #4d7cff;
   color: #fff;
   font-size: 15px;
-  font-weight: 600;
   cursor: pointer;
 }
 
-.waiter-cart-bar:disabled {
-  background: #2b2e3a;
-  color: #9aa0b4;
+.waiter-footer {
+  flex-shrink: 0;
+  padding: 12px 16px 16px;
+  border-top: 1px solid #2b2e3a;
 }
 
-.waiter-cart-drawer {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 56px;
-  max-height: 70%;
-  background: #fff;
-  color: #1c1e26;
-  border-radius: 16px 16px 0 0;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.3);
-}
-
-.waiter-cart-items {
-  overflow-y: auto;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.waiter-cart-drawer .basket-footer {
-  padding: 0 16px 16px;
+.waiter-footer .total-row {
+  color: #fff;
 }
 
 .waiter-tables {
