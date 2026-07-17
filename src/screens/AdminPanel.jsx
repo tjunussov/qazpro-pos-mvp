@@ -7,7 +7,7 @@ const toFormFields = (item) => ({
   category: item.category,
   price: String(item.price),
   color: item.color || '#2b2e3a',
-  modifiers: item.modifiers.join(', '),
+  modifiers: item.modifiers.map((m) => (m.price ? `${m.name}:${m.price}` : m.name)).join(', '),
 })
 
 const fromFormFields = (fields) => ({
@@ -18,7 +18,11 @@ const fromFormFields = (fields) => ({
   modifiers: fields.modifiers
     .split(',')
     .map((m) => m.trim())
-    .filter(Boolean),
+    .filter(Boolean)
+    .map((m) => {
+      const [name, price] = m.split(':').map((s) => s.trim())
+      return { name, price: Number(price) || 0 }
+    }),
 })
 
 function CatalogTab({ catalog, onAddItem, onUpdateItem, onDeleteItem }) {
@@ -81,7 +85,7 @@ function CatalogTab({ catalog, onAddItem, onUpdateItem, onDeleteItem }) {
             onChange={(e) => setFields((f) => ({ ...f, color: e.target.value }))}
           />
           <input
-            placeholder="Modifiers (comma separated)"
+            placeholder="Modifiers, e.g. Salty, Extra Cheese:5"
             value={fields.modifiers}
             onChange={(e) => setFields((f) => ({ ...f, modifiers: e.target.value }))}
           />
@@ -108,7 +112,7 @@ function CatalogTab({ catalog, onAddItem, onUpdateItem, onDeleteItem }) {
               <td>{item.name}</td>
               <td>{item.category}</td>
               <td>${item.price.toFixed(2)}</td>
-              <td>{item.modifiers.join(', ') || '—'}</td>
+              <td>{item.modifiers.map((m) => (m.price ? `${m.name} (+$${m.price})` : m.name)).join(', ') || '—'}</td>
               <td className="admin-row-actions">
                 <button onClick={() => startEdit(item)}>Edit</button>
                 <button onClick={() => onDeleteItem(item.id)}>Delete</button>

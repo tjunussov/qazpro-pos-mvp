@@ -1,13 +1,28 @@
 import { useState } from 'react'
-import { cartTotal } from '../data'
+import { cartTotal, resolveCartItem } from '../data'
+import ModifierPicker from './ModifierPicker'
 
 export default function Menu({ cart, tableId, startedAt, categories, onAddItem, onChangeQty, onClear, onBack, onCheckout, onSendToKitchen, kitchenStatus, canCheckout }) {
   const categoryNames = Object.keys(categories)
   const [activeCat, setActiveCat] = useState(categoryNames[0])
+  const [pickerItem, setPickerItem] = useState(null)
   const total = cartTotal(cart)
   const startedLabel = startedAt
     ? new Date(startedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     : null
+
+  const handleTileClick = (item) => {
+    if (item.modifiers.length > 0) {
+      setPickerItem(item)
+    } else {
+      onAddItem(item)
+    }
+  }
+
+  const confirmModifiers = (selected) => {
+    onAddItem(resolveCartItem(pickerItem, selected))
+    setPickerItem(null)
+  }
 
   return (
     <div className="pos">
@@ -29,12 +44,12 @@ export default function Menu({ cart, tableId, startedAt, categories, onAddItem, 
               key={item.id}
               className="tile"
               style={item.color ? { background: item.color } : undefined}
-              onClick={() => onAddItem(item)}
+              onClick={() => handleTileClick(item)}
             >
               <span className="tile-name">{item.name}</span>
               <span className="tile-price">${item.price.toFixed(2)}</span>
               {item.modifiers.length > 0 && (
-                <span className="tile-modifiers">+ {item.modifiers.join(', ')}</span>
+                <span className="tile-modifiers">+ {item.modifiers.map((m) => m.name).join(', ')}</span>
               )}
             </button>
           ))}
@@ -55,7 +70,12 @@ export default function Menu({ cart, tableId, startedAt, categories, onAddItem, 
           {cart.length === 0 && <p className="empty">No items yet</p>}
           {cart.map((i) => (
             <div key={i.id} className="basket-row">
-              <div className="basket-row-name">{i.name}</div>
+              <div className="basket-row-name">
+                {i.name}
+                {i.selectedModifiers?.length > 0 && (
+                  <div className="basket-row-mods">{i.selectedModifiers.map((m) => m.name).join(', ')}</div>
+                )}
+              </div>
               <div className="basket-row-controls">
                 <button onClick={() => onChangeQty(i.id, -1)}>−</button>
                 <span>{i.qty}</span>
@@ -86,6 +106,10 @@ export default function Menu({ cart, tableId, startedAt, categories, onAddItem, 
           )}
         </div>
       </div>
+
+      {pickerItem && (
+        <ModifierPicker item={pickerItem} onConfirm={confirmModifiers} onCancel={() => setPickerItem(null)} />
+      )}
     </div>
   )
 }

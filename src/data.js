@@ -14,9 +14,22 @@ const SEED_CATEGORIES = {
     { id: 'p4', name: 'Danish', price: 3.0 },
   ],
   Sandwiches: [
-    { id: 's1', name: 'Club Sandwich', price: 6.5 },
+    {
+      id: 's1',
+      name: 'Club Sandwich',
+      price: 6.5,
+      modifiers: [
+        { name: 'Salty', price: 0 },
+        { name: 'Extra Cheese', price: 5 },
+      ],
+    },
     { id: 's2', name: 'BLT', price: 5.75 },
-    { id: 's3', name: 'Grilled Cheese', price: 4.5 },
+    {
+      id: 's3',
+      name: 'Grilled Cheese',
+      price: 4.5,
+      modifiers: [{ name: 'Extra Cheese', price: 5 }],
+    },
   ],
   Extras: [
     { id: 'e1', name: 'Extra Shot', price: 0.75 },
@@ -26,7 +39,7 @@ const SEED_CATEGORIES = {
 }
 
 export const seedCatalog = Object.entries(SEED_CATEGORIES).flatMap(([category, items]) =>
-  items.map((item) => ({ ...item, category, color: '', modifiers: [] }))
+  items.map((item) => ({ ...item, category, color: '', modifiers: item.modifiers || [] }))
 )
 
 export const groupByCategory = (catalog) =>
@@ -44,6 +57,19 @@ export const seedStaff = [
 export const PIN_LENGTH = 4
 
 export const cartTotal = (cart) => cart.reduce((sum, i) => sum + i.price * i.qty, 0)
+
+export const resolveCartItem = (item, selectedModifiers) => {
+  if (!selectedModifiers.length) return item
+  const extra = selectedModifiers.reduce((sum, m) => sum + m.price, 0)
+  const names = selectedModifiers.map((m) => m.name).sort()
+  return {
+    id: `${item.id}__${names.join('+')}`,
+    name: item.name,
+    price: item.price + extra,
+    category: item.category,
+    selectedModifiers: selectedModifiers,
+  }
+}
 
 export const addToCart = (cart, item) => {
   const found = cart.find((i) => i.id === item.id)
