@@ -75,12 +75,15 @@ export default function App() {
   const sendToKitchen = () => {
     setKitchenOrders((ks) => [
       ...ks.filter((k) => k.tableId !== activeTableId),
-      { id: activeTableId, tableId: activeTableId, items: activeTable.cart, sentAt: new Date() },
+      { id: activeTableId, tableId: activeTableId, items: activeTable.cart, sentAt: new Date(), status: 'pending' },
     ])
   }
 
   const markOrderReady = (orderId) =>
-    setKitchenOrders((ks) => ks.filter((k) => k.id !== orderId))
+    setKitchenOrders((ks) => ks.map((k) => (k.id === orderId ? { ...k, status: 'ready' } : k)))
+
+  const activeKitchenOrder = kitchenOrders.find((k) => k.tableId === activeTableId)
+  const canCheckout = activeKitchenOrder?.status === 'ready'
 
   const confirmPayment = (method) => {
     const check = {
@@ -117,6 +120,8 @@ export default function App() {
           onBack={backToTables}
           onCheckout={goToPayment}
           onSendToKitchen={sendToKitchen}
+          kitchenStatus={activeKitchenOrder?.status ?? null}
+          canCheckout={canCheckout}
         />
       )
     }

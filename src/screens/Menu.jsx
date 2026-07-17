@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { cartTotal } from '../data'
 
-export default function Menu({ cart, tableId, startedAt, categories, onAddItem, onChangeQty, onClear, onBack, onCheckout, onSendToKitchen }) {
+export default function Menu({ cart, tableId, startedAt, categories, onAddItem, onChangeQty, onClear, onBack, onCheckout, onSendToKitchen, kitchenStatus, canCheckout }) {
   const categoryNames = Object.keys(categories)
   const [activeCat, setActiveCat] = useState(categoryNames[0])
   const total = cartTotal(cart)
@@ -76,9 +76,14 @@ export default function Menu({ cart, tableId, startedAt, categories, onAddItem, 
           <button className="kitchen-btn" disabled={!cart.length} onClick={onSendToKitchen}>
             Send to Kitchen
           </button>
-          <button className="charge-btn" disabled={!cart.length} onClick={onCheckout}>
+          <button className="charge-btn" disabled={!canCheckout} onClick={onCheckout}>
             Checkout ${total.toFixed(2)}
           </button>
+          {!canCheckout && cart.length > 0 && (
+            <p className="checkout-hint">
+              {kitchenStatus === 'pending' ? 'Waiting for kitchen to confirm ready…' : 'Send to kitchen before checkout'}
+            </p>
+          )}
         </div>
       </div>
     </div>

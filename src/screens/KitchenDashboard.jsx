@@ -4,6 +4,7 @@ const RED_AFTER_MS = 10 * 60 * 1000
 
 export default function KitchenDashboard({ orders, onReady }) {
   const [, setTick] = useState(0)
+  const pending = orders.filter((o) => o.status === 'pending')
 
   useEffect(() => {
     const id = setInterval(() => setTick((t) => t + 1), 15000)
@@ -13,9 +14,9 @@ export default function KitchenDashboard({ orders, onReady }) {
   return (
     <div className="kitchen-screen">
       <h1>Kitchen</h1>
-      {orders.length === 0 && <p className="empty">No active orders</p>}
+      {pending.length === 0 && <p className="empty">No active orders</p>}
       <div className="kitchen-grid">
-        {orders.map((o) => {
+        {pending.map((o) => {
           const elapsedMs = Date.now() - new Date(o.sentAt).getTime()
           const elapsedMin = Math.floor(elapsedMs / 60000)
           const late = elapsedMs >= RED_AFTER_MS
