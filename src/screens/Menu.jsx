@@ -84,11 +84,13 @@ export default function Menu({ cart, tableLabel, startedAt, categories, onAddIte
               <div className="basket-row-price">${(i.price * i.qty).toFixed(2)}</div>
             </div>
           ))}
+          {cart.length > 0 && (
+            <button className="clear-btn" onClick={onClear}>
+              Clear
+            </button>
+          )}
         </div>
         <div className="basket-footer">
-          <button className="clear-btn" onClick={onClear} disabled={!cart.length}>
-            Clear
-          </button>
           <div className="total-row">
             <span>Total</span>
             <span>${total.toFixed(2)}</span>

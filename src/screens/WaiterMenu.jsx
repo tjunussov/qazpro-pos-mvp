@@ -108,12 +108,14 @@ export default function WaiterMenu({
           )
         })}
         {rows.length === 0 && <p className="empty">No items match "{query}"</p>}
+        {cart.length > 0 && (
+          <button className="clear-btn waiter-clear-btn" onClick={onClear}>
+            Clear
+          </button>
+        )}
       </div>
 
       <div className="waiter-footer">
-        <button className="clear-btn" onClick={onClear} disabled={!cart.length}>
-          Clear
-        </button>
         <div className="total-row">
           <span>Total</span>
           <span>${total.toFixed(2)}</span>

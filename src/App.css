@@ -907,6 +907,10 @@
   padding: 0 16px;
 }
 
+.waiter-clear-btn {
+  margin: 14px 0;
+}
+
 .waiter-row {
   display: flex;
   align-items: center;
