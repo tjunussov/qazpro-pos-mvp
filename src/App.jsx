@@ -4,6 +4,7 @@ import Login from './screens/Login'
 import Menu from './screens/Menu'
 import Tables from './screens/Tables'
 import Payment from './screens/Payment'
+import History from './screens/History'
 import { addToCart, changeCartQty, cartTotal } from './data'
 
 const initialTables = Array.from({ length: 7 }, (_, i) => ({ id: i + 1, cart: [] }))
@@ -35,6 +36,7 @@ export default function App() {
   const clearCart = () => updateActiveCart(() => [])
   const backToTables = () => setScreen('tables')
   const goToPayment = () => setScreen('payment')
+  const goToHistory = () => setScreen('history')
 
   const confirmPayment = (method) => {
     const check = {
@@ -73,5 +75,9 @@ export default function App() {
     return <Payment total={cartTotal(activeTable.cart)} onConfirm={confirmPayment} />
   }
 
-  return <Tables tables={tables} onSelectTable={selectTable} onViewHistory={() => console.log('history TBD')} />
+  if (screen === 'history') {
+    return <History checks={checks} onBack={backToTables} />
+  }
+
+  return <Tables tables={tables} onSelectTable={selectTable} onViewHistory={goToHistory} />
 }

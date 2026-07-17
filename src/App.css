@@ -399,3 +399,65 @@
   font-size: 18px;
   color: #9aa0b4;
 }
+
+.history-screen {
+  height: 100svh;
+  width: 1024px;
+  max-width: 100%;
+  background: #1c1e26;
+  padding: 24px;
+  box-sizing: border-box;
+  color: #fff;
+  overflow-y: auto;
+}
+
+.history-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.history-header h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.history-row {
+  background: #2b2e3a;
+  border-radius: 12px;
+  padding: 14px 18px;
+  cursor: pointer;
+}
+
+.history-summary {
+  display: flex;
+  justify-content: space-between;
+  font-size: 15px;
+}
+
+.history-total {
+  font-weight: 700;
+}
+
+.history-items {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #3a3d4a;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  color: #cfd2dc;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+}
