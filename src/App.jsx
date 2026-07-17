@@ -24,7 +24,7 @@ export default function App() {
   const [kitchenOrders, setKitchenOrders] = useState([])
 
   const activeTable = tables.find((t) => t.id === activeTableId)
-  const staffName = role === 'waiter' ? waiterName : cashier.name
+  const staffName = role === 'waiter' ? waiterName : cashier?.name
 
   const updateActiveCart = (updater) =>
     setTables((ts) => ts.map((t) => {
