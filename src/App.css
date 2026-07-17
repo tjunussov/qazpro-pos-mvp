@@ -89,8 +89,32 @@
 }
 
 .basket h2 {
-  margin: 0 0 12px;
+  margin: 0;
   font-size: 20px;
+}
+
+.basket-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.order-meta {
+  font-size: 13px;
+  color: #9aa0b4;
+  margin-top: 2px;
+}
+
+.close-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: #eef0f5;
+  color: #444;
+  font-size: 15px;
+  cursor: pointer;
 }
 
 .basket-items {

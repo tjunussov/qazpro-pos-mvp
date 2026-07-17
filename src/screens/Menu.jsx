@@ -1,15 +1,17 @@
 import { useState } from 'react'
 import { CATEGORIES, cartTotal } from '../data'
 
-export default function Menu({ cart, onAddItem, onChangeQty, onClear, onBack, onCheckout }) {
+export default function Menu({ cart, tableId, startedAt, onAddItem, onChangeQty, onClear, onBack, onCheckout }) {
   const [activeCat, setActiveCat] = useState('Beverages')
   const total = cartTotal(cart)
+  const startedLabel = startedAt
+    ? new Date(startedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    : null
 
   return (
     <div className="pos">
       <div className="menu">
         <div className="tabs">
-          <button className="back-btn" onClick={onBack}>←</button>
           {Object.keys(CATEGORIES).map((cat) => (
             <button
               key={cat}
@@ -31,7 +33,15 @@ export default function Menu({ cart, onAddItem, onChangeQty, onClear, onBack, on
       </div>
 
       <div className="basket">
-        <h2>Order</h2>
+        <div className="basket-header">
+          <div>
+            <h2>Order</h2>
+            <div className="order-meta">
+              Table {tableId}{startedLabel ? ` · started ${startedLabel}` : ''}
+            </div>
+          </div>
+          <button className="close-btn" onClick={onBack}>✕</button>
+        </div>
         <div className="basket-items">
           {cart.length === 0 && <p className="empty">No items yet</p>}
           {cart.map((i) => (

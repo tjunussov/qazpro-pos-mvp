@@ -9,7 +9,7 @@ import RoleTabbar from './screens/RoleTabbar'
 import RolePlaceholder from './screens/RolePlaceholder'
 import { addToCart, changeCartQty, cartTotal } from './data'
 
-const initialTables = Array.from({ length: 7 }, (_, i) => ({ id: i + 1, cart: [] }))
+const initialTables = Array.from({ length: 7 }, (_, i) => ({ id: i + 1, cart: [], startedAt: null }))
 
 export default function App() {
   const [screen, setScreen] = useState('login')
@@ -22,7 +22,12 @@ export default function App() {
   const activeTable = tables.find((t) => t.id === activeTableId)
 
   const updateActiveCart = (updater) =>
-    setTables((ts) => ts.map((t) => (t.id !== activeTableId ? t : { ...t, cart: updater(t.cart) })))
+    setTables((ts) => ts.map((t) => {
+      if (t.id !== activeTableId) return t
+      const cart = updater(t.cart)
+      const startedAt = cart.length === 0 ? null : (t.startedAt ?? new Date())
+      return { ...t, cart, startedAt }
+    }))
 
   const login = (c) => {
     setCashier(c)
@@ -66,6 +71,8 @@ export default function App() {
       return (
         <Menu
           cart={activeTable.cart}
+          tableId={activeTable.id}
+          startedAt={activeTable.startedAt}
           onAddItem={addItem}
           onChangeQty={changeQty}
           onClear={clearCart}
