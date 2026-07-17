@@ -8,6 +8,7 @@ import History from './screens/History'
 import RoleTabbar from './screens/RoleTabbar'
 import RolePlaceholder from './screens/RolePlaceholder'
 import KitchenDashboard from './screens/KitchenDashboard'
+import WaiterSelect from './screens/WaiterSelect'
 import { addToCart, changeCartQty, cartTotal } from './data'
 
 const initialTables = Array.from({ length: 7 }, (_, i) => ({ id: i + 1, cart: [], startedAt: null }))
@@ -16,12 +17,14 @@ export default function App() {
   const [screen, setScreen] = useState('login')
   const [role, setRole] = useState('cashier')
   const [cashier, setCashier] = useState(null)
+  const [waiterName, setWaiterName] = useState(null)
   const [tables, setTables] = useState(initialTables)
   const [activeTableId, setActiveTableId] = useState(null)
   const [checks, setChecks] = useState([])
   const [kitchenOrders, setKitchenOrders] = useState([])
 
   const activeTable = tables.find((t) => t.id === activeTableId)
+  const staffName = role === 'waiter' ? waiterName : cashier.name
 
   const updateActiveCart = (updater) =>
     setTables((ts) => ts.map((t) => {
@@ -65,7 +68,7 @@ export default function App() {
       items: activeTable.cart,
       total: cartTotal(activeTable.cart),
       payment: method,
-      cashierName: cashier.name,
+      cashierName: staffName,
       time: new Date(),
     }
     setChecks((cs) => [check, ...cs])
@@ -109,7 +112,8 @@ export default function App() {
       <div className="app-content">
         {role === 'cashier' && renderCashier()}
         {role === 'kitchen' && <KitchenDashboard orders={kitchenOrders} onReady={markOrderReady} />}
-        {(role === 'waiter' || role === 'admin') && <RolePlaceholder role={role} />}
+        {role === 'waiter' && (waiterName ? renderCashier() : <WaiterSelect onSelect={setWaiterName} />)}
+        {role === 'admin' && <RolePlaceholder role={role} />}
       </div>
       <RoleTabbar role={role} onChange={setRole} />
     </div>
