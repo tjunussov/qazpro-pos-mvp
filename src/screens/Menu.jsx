@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { CATEGORIES, cartTotal } from '../data'
 
-export default function Menu({ cart, tableId, startedAt, onAddItem, onChangeQty, onClear, onBack, onCheckout }) {
+export default function Menu({ cart, tableId, startedAt, onAddItem, onChangeQty, onClear, onBack, onCheckout, onSendToKitchen }) {
   const [activeCat, setActiveCat] = useState('Beverages')
   const total = cartTotal(cart)
   const startedLabel = startedAt
@@ -63,6 +63,9 @@ export default function Menu({ cart, tableId, startedAt, onAddItem, onChangeQty,
           </div>
           <button className="clear-btn" onClick={onClear} disabled={!cart.length}>
             Clear
+          </button>
+          <button className="kitchen-btn" disabled={!cart.length} onClick={onSendToKitchen}>
+            Send to Kitchen
           </button>
           <button className="charge-btn" disabled={!cart.length} onClick={onCheckout}>
             Checkout ${total.toFixed(2)}

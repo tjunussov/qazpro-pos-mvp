@@ -7,6 +7,7 @@ import Payment from './screens/Payment'
 import History from './screens/History'
 import RoleTabbar from './screens/RoleTabbar'
 import RolePlaceholder from './screens/RolePlaceholder'
+import KitchenDashboard from './screens/KitchenDashboard'
 import { addToCart, changeCartQty, cartTotal } from './data'
 
 const initialTables = Array.from({ length: 7 }, (_, i) => ({ id: i + 1, cart: [], startedAt: null }))
@@ -18,6 +19,7 @@ export default function App() {
   const [tables, setTables] = useState(initialTables)
   const [activeTableId, setActiveTableId] = useState(null)
   const [checks, setChecks] = useState([])
+  const [kitchenOrders, setKitchenOrders] = useState([])
 
   const activeTable = tables.find((t) => t.id === activeTableId)
 
@@ -46,6 +48,16 @@ export default function App() {
   const goToPayment = () => setScreen('payment')
   const goToHistory = () => setScreen('history')
 
+  const sendToKitchen = () => {
+    setKitchenOrders((ks) => [
+      ...ks.filter((k) => k.tableId !== activeTableId),
+      { id: activeTableId, tableId: activeTableId, items: activeTable.cart, sentAt: new Date() },
+    ])
+  }
+
+  const markOrderReady = (orderId) =>
+    setKitchenOrders((ks) => ks.filter((k) => k.id !== orderId))
+
   const confirmPayment = (method) => {
     const check = {
       id: Date.now(),
@@ -57,6 +69,7 @@ export default function App() {
       time: new Date(),
     }
     setChecks((cs) => [check, ...cs])
+    setKitchenOrders((ks) => ks.filter((k) => k.tableId !== activeTableId))
     updateActiveCart(() => [])
     setActiveTableId(null)
     setScreen('tables')
@@ -78,6 +91,7 @@ export default function App() {
           onClear={clearCart}
           onBack={backToTables}
           onCheckout={goToPayment}
+          onSendToKitchen={sendToKitchen}
         />
       )
     }
@@ -93,7 +107,9 @@ export default function App() {
   return (
     <div className="app-shell">
       <div className="app-content">
-        {role === 'cashier' ? renderCashier() : <RolePlaceholder role={role} />}
+        {role === 'cashier' && renderCashier()}
+        {role === 'kitchen' && <KitchenDashboard orders={kitchenOrders} onReady={markOrderReady} />}
+        {(role === 'waiter' || role === 'admin') && <RolePlaceholder role={role} />}
       </div>
       <RoleTabbar role={role} onChange={setRole} />
     </div>

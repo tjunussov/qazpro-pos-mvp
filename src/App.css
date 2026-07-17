@@ -183,6 +183,7 @@
 }
 
 .clear-btn,
+.kitchen-btn,
 .charge-btn {
   width: 100%;
   padding: 14px;
@@ -199,12 +200,18 @@
   color: #444;
 }
 
+.kitchen-btn {
+  background: #ffb020;
+  color: #1c1e26;
+}
+
 .charge-btn {
   background: #4d7cff;
   color: #fff;
 }
 
 .clear-btn:disabled,
+.kitchen-btn:disabled,
 .charge-btn:disabled {
   opacity: 0.4;
   cursor: default;
@@ -521,4 +528,62 @@
 
 .role-placeholder p {
   color: #9aa0b4;
+}
+
+.kitchen-screen {
+  height: 100%;
+  background: #1c1e26;
+  color: #fff;
+  padding: 24px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.kitchen-screen h1 {
+  margin: 0 0 20px;
+  font-size: 24px;
+}
+
+.kitchen-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.kitchen-card {
+  background: #2b2e3a;
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.kitchen-card.late {
+  background: #5c2020;
+}
+
+.kitchen-card-header {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.kitchen-card-items {
+  font-size: 14px;
+  color: #cfd2dc;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ready-btn {
+  border: none;
+  border-radius: 10px;
+  background: #4d7cff;
+  color: #fff;
+  font-weight: 600;
+  padding: 10px;
+  cursor: pointer;
 }
