@@ -92,16 +92,18 @@ export default function WaiterMenu({
           </div>
           <div className="basket-footer">
             <button className="clear-btn" onClick={onClear} disabled={!cart.length}>Clear</button>
-            <button className="kitchen-btn" disabled={!cart.length} onClick={onSendToKitchen}>
-              Send to Kitchen
-            </button>
-            <button className="charge-btn" disabled={!canCheckout} onClick={onCheckout}>
-              Checkout ${total.toFixed(2)}
-            </button>
-            {!canCheckout && cart.length > 0 && (
-              <p className="checkout-hint">
-                {kitchenStatus === 'pending' ? 'Waiting for kitchen to confirm ready…' : 'Send to kitchen before checkout'}
-              </p>
+            {canCheckout ? (
+              <button className="charge-btn" onClick={onCheckout}>
+                Checkout ${total.toFixed(2)}
+              </button>
+            ) : kitchenStatus === 'pending' ? (
+              <button className="kitchen-btn" disabled>
+                Waiting for kitchen…
+              </button>
+            ) : (
+              <button className="kitchen-btn" disabled={!cart.length} onClick={onSendToKitchen}>
+                Send to Kitchen · ${total.toFixed(2)}
+              </button>
             )}
           </div>
         </div>
