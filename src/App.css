@@ -270,3 +270,91 @@
   font-size: 13px;
   opacity: 0.7;
 }
+
+.login-screen {
+  height: 100svh;
+  width: 1024px;
+  max-width: 100%;
+  background: #1c1e26;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  box-sizing: border-box;
+  color: #fff;
+}
+
+.login-screen h1 {
+  margin: 0;
+  font-size: 26px;
+}
+
+.cashier-grid {
+  display: flex;
+  gap: 20px;
+}
+
+.cashier-tile {
+  width: 160px;
+  height: 120px;
+  border: none;
+  border-radius: 16px;
+  background: #2b2e3a;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pin-dots {
+  display: flex;
+  gap: 14px;
+}
+
+.pin-dots.error .pin-dot {
+  background: #ff5c5c;
+}
+
+.pin-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #2b2e3a;
+  border: 2px solid #4d7cff;
+}
+
+.pin-dot.filled {
+  background: #4d7cff;
+}
+
+.pin-error {
+  color: #ff8080;
+  margin: -12px 0 0;
+  font-size: 14px;
+}
+
+.pin-pad {
+  display: grid;
+  grid-template-columns: repeat(3, 72px);
+  gap: 14px;
+}
+
+.pin-key {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: none;
+  background: #2b2e3a;
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.pin-back {
+  background: none;
+  border: none;
+  color: #9aa0b4;
+  font-size: 15px;
+  cursor: pointer;
+}

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import './App.css'
+import Login from './screens/Login'
 import Menu from './screens/Menu'
 import Tables from './screens/Tables'
 import { addToCart, changeCartQty } from './data'
@@ -7,7 +8,8 @@ import { addToCart, changeCartQty } from './data'
 const initialTables = Array.from({ length: 7 }, (_, i) => ({ id: i + 1, cart: [] }))
 
 export default function App() {
-  const [screen, setScreen] = useState('tables')
+  const [screen, setScreen] = useState('login')
+  const [cashier, setCashier] = useState(null)
   const [tables, setTables] = useState(initialTables)
   const [activeTableId, setActiveTableId] = useState(null)
 
@@ -15,6 +17,11 @@ export default function App() {
 
   const updateActiveCart = (updater) =>
     setTables((ts) => ts.map((t) => (t.id !== activeTableId ? t : { ...t, cart: updater(t.cart) })))
+
+  const login = (c) => {
+    setCashier(c)
+    setScreen('tables')
+  }
 
   const selectTable = (id) => {
     setActiveTableId(id)
@@ -25,6 +32,10 @@ export default function App() {
   const changeQty = (id, delta) => updateActiveCart((cart) => changeCartQty(cart, id, delta))
   const clearCart = () => updateActiveCart(() => [])
   const backToTables = () => setScreen('tables')
+
+  if (screen === 'login') {
+    return <Login onLogin={login} />
+  }
 
   if (screen === 'menu' && activeTable) {
     return (
