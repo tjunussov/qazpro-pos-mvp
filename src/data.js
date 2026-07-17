@@ -58,6 +58,11 @@ export const PIN_LENGTH = 4
 
 export const cartTotal = (cart) => cart.reduce((sum, i) => sum + i.price * i.qty, 0)
 
+export const orderLabel = (tableId) =>
+  typeof tableId === 'string' && tableId.startsWith('togo-')
+    ? `To Go #${tableId.split('-')[1].slice(-4)}`
+    : `Table ${tableId}`
+
 export const resolveCartItem = (item, selectedModifiers) => {
   if (!selectedModifiers.length) return item
   const extra = selectedModifiers.reduce((sum, m) => sum + m.price, 0)

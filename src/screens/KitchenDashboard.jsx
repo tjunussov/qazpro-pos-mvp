@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { orderLabel } from '../data'
 
 const RED_AFTER_MS = 10 * 60 * 1000
 
@@ -23,7 +24,7 @@ export default function KitchenDashboard({ orders, onReady }) {
           return (
             <div key={o.id} className={`kitchen-card ${late ? 'late' : ''}`}>
               <div className="kitchen-card-header">
-                <span>Table {o.tableId}</span>
+                <span>{orderLabel(o.tableId)}</span>
                 <span>{elapsedMin}m</span>
               </div>
               <div className="kitchen-card-items">

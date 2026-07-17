@@ -9,9 +9,9 @@ import RoleTabbar from './screens/RoleTabbar'
 import KitchenDashboard from './screens/KitchenDashboard'
 import WaiterSelect from './screens/WaiterSelect'
 import AdminPanel from './screens/AdminPanel'
-import { addToCart, changeCartQty, cartTotal, seedCatalog, groupByCategory, seedStaff } from './data'
+import { addToCart, changeCartQty, cartTotal, seedCatalog, groupByCategory, seedStaff, orderLabel } from './data'
 
-const initialTables = Array.from({ length: 7 }, (_, i) => ({ id: i + 1, cart: [], startedAt: null }))
+const initialTables = Array.from({ length: 7 }, (_, i) => ({ id: i + 1, type: 'table', cart: [], startedAt: null }))
 
 export default function App() {
   const [screen, setScreen] = useState('login')
@@ -28,6 +28,7 @@ export default function App() {
   const activeTable = tables.find((t) => t.id === activeTableId)
   const staffName = role === 'waiter' ? waiterName : cashier?.name
   const categories = groupByCategory(catalog)
+  const tableLabel = activeTable ? orderLabel(activeTable.id) : ''
 
   const addCatalogItem = (item) =>
     setCatalog((c) => [...c, { ...item, id: `i${Date.now()}` }])
@@ -65,10 +66,22 @@ export default function App() {
     setScreen('menu')
   }
 
+  const newTogoOrder = () => {
+    const id = `togo-${Date.now()}`
+    setTables((ts) => [...ts, { id, type: 'togo', cart: [], startedAt: null }])
+    setActiveTableId(id)
+    setScreen('menu')
+  }
+
   const addItem = (item) => updateActiveCart((cart) => addToCart(cart, item))
   const changeQty = (id, delta) => updateActiveCart((cart) => changeCartQty(cart, id, delta))
   const clearCart = () => updateActiveCart(() => [])
-  const backToTables = () => setScreen('tables')
+  const backToTables = () => {
+    if (activeTable?.type === 'togo' && activeTable.cart.length === 0) {
+      setTables((ts) => ts.filter((t) => t.id !== activeTableId))
+    }
+    setScreen('tables')
+  }
   const goToPayment = () => setScreen('payment')
   const goToHistory = () => setScreen('history')
 
@@ -97,7 +110,11 @@ export default function App() {
     }
     setChecks((cs) => [check, ...cs])
     setKitchenOrders((ks) => ks.filter((k) => k.tableId !== activeTableId))
-    updateActiveCart(() => [])
+    if (activeTable.type === 'togo') {
+      setTables((ts) => ts.filter((t) => t.id !== activeTableId))
+    } else {
+      updateActiveCart(() => [])
+    }
     setActiveTableId(null)
     setScreen('tables')
   }
@@ -111,7 +128,7 @@ export default function App() {
       return (
         <Menu
           cart={activeTable.cart}
-          tableId={activeTable.id}
+          tableLabel={tableLabel}
           startedAt={activeTable.startedAt}
           categories={categories}
           onAddItem={addItem}
@@ -131,7 +148,7 @@ export default function App() {
     if (screen === 'history') {
       return <History checks={checks} onBack={backToTables} />
     }
-    return <Tables tables={tables} onSelectTable={selectTable} onViewHistory={goToHistory} />
+    return <Tables tables={tables} onSelectTable={selectTable} onViewHistory={goToHistory} onNewTogo={newTogoOrder} />
   }
 
   return (

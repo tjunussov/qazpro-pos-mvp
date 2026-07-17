@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { cartTotal, resolveCartItem } from '../data'
 import ModifierPicker from './ModifierPicker'
 
-export default function Menu({ cart, tableId, startedAt, categories, onAddItem, onChangeQty, onClear, onBack, onCheckout, onSendToKitchen, kitchenStatus, canCheckout }) {
+export default function Menu({ cart, tableLabel, startedAt, categories, onAddItem, onChangeQty, onClear, onBack, onCheckout, onSendToKitchen, kitchenStatus, canCheckout }) {
   const categoryNames = Object.keys(categories)
   const [activeCat, setActiveCat] = useState(categoryNames[0])
   const [pickerItem, setPickerItem] = useState(null)
@@ -61,7 +61,7 @@ export default function Menu({ cart, tableId, startedAt, categories, onAddItem, 
           <div>
             <h2>Order</h2>
             <div className="order-meta">
-              Table {tableId}{startedLabel ? ` · started ${startedLabel}` : ''}
+              {tableLabel}{startedLabel ? ` · started ${startedLabel}` : ''}
             </div>
           </div>
           <button className="close-btn" onClick={onBack}>✕</button>

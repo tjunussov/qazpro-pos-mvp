@@ -279,6 +279,42 @@
   gap: 16px;
 }
 
+.togo-divider {
+  border-top: 1px solid #2b2e3a;
+  margin: 24px 0 20px;
+}
+
+.togo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.togo-header h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.togo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.togo-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: none;
+  background: #2b2e3a;
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+  text-align: left;
+}
+
 .table-tile {
   height: 140px;
   border: none;
