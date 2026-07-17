@@ -2,13 +2,14 @@ import { useEffect, useState } from 'react'
 import { orderLabel } from '../data'
 
 const RED_AFTER_MS = 10 * 60 * 1000
+const NEW_BADGE_MS = 10 * 1000
 
 export default function KitchenDashboard({ orders, onReady }) {
   const [, setTick] = useState(0)
   const pending = orders.filter((o) => o.status === 'pending')
 
   useEffect(() => {
-    const id = setInterval(() => setTick((t) => t + 1), 15000)
+    const id = setInterval(() => setTick((t) => t + 1), 2000)
     return () => clearInterval(id)
   }, [])
 
@@ -21,10 +22,14 @@ export default function KitchenDashboard({ orders, onReady }) {
           const elapsedMs = Date.now() - new Date(o.sentAt).getTime()
           const elapsedMin = Math.floor(elapsedMs / 60000)
           const late = elapsedMs >= RED_AFTER_MS
+          const isNew = elapsedMs < NEW_BADGE_MS
           return (
-            <div key={o.id} className={`kitchen-card ${late ? 'late' : ''}`}>
+            <div key={o.id} className={`kitchen-card ${late ? 'late' : ''} ${isNew ? 'new' : ''}`}>
               <div className="kitchen-card-header">
-                <span>{orderLabel(o.tableId)}</span>
+                <span>
+                  {orderLabel(o.tableId)}
+                  {isNew && <span className="new-badge">New</span>}
+                </span>
                 <span>{elapsedMin}m</span>
               </div>
               <div className="kitchen-card-items">

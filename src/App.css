@@ -587,6 +587,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  animation: card-appear 0.4s ease;
 }
 
 .kitchen-card.late {
@@ -596,8 +597,41 @@
 .kitchen-card-header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   font-weight: 700;
   font-size: 16px;
+}
+
+.new-badge {
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #ffb020;
+  color: #1c1e26;
+  font-size: 11px;
+  font-weight: 700;
+  vertical-align: middle;
+  animation: badge-blink 1s ease-in-out infinite;
+}
+
+@keyframes card-appear {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes badge-blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
 }
 
 .kitchen-card-items {
@@ -936,4 +970,55 @@
 
 .waiter-cart-drawer .basket-footer {
   padding: 0 16px 16px;
+}
+
+.waiter-tables {
+  height: 100%;
+  width: 420px;
+  max-width: 100%;
+  margin: 0 auto;
+  background: #1c1e26;
+  color: #fff;
+  padding: 16px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.waiter-tables-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.waiter-tables-header h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.waiter-tables-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.waiter-table-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: none;
+  font-size: 15px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.waiter-table-row.free {
+  background: #2b2e3a;
+  color: #fff;
+}
+
+.waiter-table-row.occupied {
+  background: #4d7cff;
+  color: #fff;
 }

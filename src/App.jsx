@@ -4,6 +4,7 @@ import Login from './screens/Login'
 import Menu from './screens/Menu'
 import WaiterMenu from './screens/WaiterMenu'
 import Tables from './screens/Tables'
+import WaiterTables from './screens/WaiterTables'
 import Payment from './screens/Payment'
 import History from './screens/History'
 import RoleTabbar from './screens/RoleTabbar'
@@ -124,7 +125,7 @@ export default function App() {
     return <Login staff={staff} onLogin={login} />
   }
 
-  const renderOrderFlow = (MenuComponent) => {
+  const renderOrderFlow = (MenuComponent, TablesComponent) => {
     if (screen === 'menu' && activeTable) {
       return (
         <MenuComponent
@@ -149,15 +150,15 @@ export default function App() {
     if (screen === 'history') {
       return <History checks={checks} onBack={backToTables} />
     }
-    return <Tables tables={tables} onSelectTable={selectTable} onViewHistory={goToHistory} onNewTogo={newTogoOrder} />
+    return <TablesComponent tables={tables} onSelectTable={selectTable} onViewHistory={goToHistory} onNewTogo={newTogoOrder} />
   }
 
   return (
     <div className="app-shell">
       <div className="app-content">
-        {role === 'cashier' && renderOrderFlow(Menu)}
+        {role === 'cashier' && renderOrderFlow(Menu, Tables)}
         {role === 'kitchen' && <KitchenDashboard orders={kitchenOrders} onReady={markOrderReady} />}
-        {role === 'waiter' && (waiterName ? renderOrderFlow(WaiterMenu) : <WaiterSelect staff={staff} onSelect={setWaiterName} />)}
+        {role === 'waiter' && (waiterName ? renderOrderFlow(WaiterMenu, WaiterTables) : <WaiterSelect staff={staff} onSelect={setWaiterName} />)}
         {role === 'admin' && (
           <AdminPanel
             catalog={catalog}
