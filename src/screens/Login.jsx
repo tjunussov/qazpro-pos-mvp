@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { CASHIERS, PIN_LENGTH } from '../data'
+import { PIN_LENGTH } from '../data'
 
-export default function Login({ onLogin }) {
+export default function Login({ staff, onLogin }) {
   const [selected, setSelected] = useState(null)
   const [pin, setPin] = useState('')
 
@@ -19,7 +19,7 @@ export default function Login({ onLogin }) {
       <div className="login-screen">
         <h1>Select Cashier</h1>
         <div className="cashier-grid">
-          {CASHIERS.map((c) => (
+          {staff.map((c) => (
             <button key={c.id} className="cashier-tile" onClick={() => setSelected(c)}>
               {c.name}
             </button>

@@ -6,10 +6,10 @@ import Tables from './screens/Tables'
 import Payment from './screens/Payment'
 import History from './screens/History'
 import RoleTabbar from './screens/RoleTabbar'
-import RolePlaceholder from './screens/RolePlaceholder'
 import KitchenDashboard from './screens/KitchenDashboard'
 import WaiterSelect from './screens/WaiterSelect'
-import { addToCart, changeCartQty, cartTotal } from './data'
+import AdminPanel from './screens/AdminPanel'
+import { addToCart, changeCartQty, cartTotal, seedCatalog, groupByCategory, seedStaff } from './data'
 
 const initialTables = Array.from({ length: 7 }, (_, i) => ({ id: i + 1, cart: [], startedAt: null }))
 
@@ -22,9 +22,30 @@ export default function App() {
   const [activeTableId, setActiveTableId] = useState(null)
   const [checks, setChecks] = useState([])
   const [kitchenOrders, setKitchenOrders] = useState([])
+  const [catalog, setCatalog] = useState(seedCatalog)
+  const [staff, setStaff] = useState(seedStaff)
 
   const activeTable = tables.find((t) => t.id === activeTableId)
   const staffName = role === 'waiter' ? waiterName : cashier?.name
+  const categories = groupByCategory(catalog)
+
+  const addCatalogItem = (item) =>
+    setCatalog((c) => [...c, { ...item, id: `i${Date.now()}` }])
+
+  const updateCatalogItem = (id, patch) =>
+    setCatalog((c) => c.map((item) => (item.id === id ? { ...item, ...patch } : item)))
+
+  const deleteCatalogItem = (id) =>
+    setCatalog((c) => c.filter((item) => item.id !== id))
+
+  const addStaffMember = (name) =>
+    setStaff((s) => [...s, { id: `u${Date.now()}`, name }])
+
+  const updateStaffMember = (id, name) =>
+    setStaff((s) => s.map((m) => (m.id === id ? { ...m, name } : m)))
+
+  const deleteStaffMember = (id) =>
+    setStaff((s) => s.filter((m) => m.id !== id))
 
   const updateActiveCart = (updater) =>
     setTables((ts) => ts.map((t) => {
@@ -79,7 +100,7 @@ export default function App() {
   }
 
   if (screen === 'login') {
-    return <Login onLogin={login} />
+    return <Login staff={staff} onLogin={login} />
   }
 
   const renderCashier = () => {
@@ -89,6 +110,7 @@ export default function App() {
           cart={activeTable.cart}
           tableId={activeTable.id}
           startedAt={activeTable.startedAt}
+          categories={categories}
           onAddItem={addItem}
           onChangeQty={changeQty}
           onClear={clearCart}
@@ -112,8 +134,20 @@ export default function App() {
       <div className="app-content">
         {role === 'cashier' && renderCashier()}
         {role === 'kitchen' && <KitchenDashboard orders={kitchenOrders} onReady={markOrderReady} />}
-        {role === 'waiter' && (waiterName ? renderCashier() : <WaiterSelect onSelect={setWaiterName} />)}
-        {role === 'admin' && <RolePlaceholder role={role} />}
+        {role === 'waiter' && (waiterName ? renderCashier() : <WaiterSelect staff={staff} onSelect={setWaiterName} />)}
+        {role === 'admin' && (
+          <AdminPanel
+            catalog={catalog}
+            onAddItem={addCatalogItem}
+            onUpdateItem={updateCatalogItem}
+            onDeleteItem={deleteCatalogItem}
+            staff={staff}
+            onAddStaff={addStaffMember}
+            onUpdateStaff={updateStaffMember}
+            onDeleteStaff={deleteStaffMember}
+            checks={checks}
+          />
+        )}
       </div>
       <RoleTabbar role={role} onChange={setRole} />
     </div>

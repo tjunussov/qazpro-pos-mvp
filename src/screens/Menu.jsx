@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { CATEGORIES, cartTotal } from '../data'
+import { cartTotal } from '../data'
 
-export default function Menu({ cart, tableId, startedAt, onAddItem, onChangeQty, onClear, onBack, onCheckout, onSendToKitchen }) {
-  const [activeCat, setActiveCat] = useState('Beverages')
+export default function Menu({ cart, tableId, startedAt, categories, onAddItem, onChangeQty, onClear, onBack, onCheckout, onSendToKitchen }) {
+  const categoryNames = Object.keys(categories)
+  const [activeCat, setActiveCat] = useState(categoryNames[0])
   const total = cartTotal(cart)
   const startedLabel = startedAt
     ? new Date(startedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -12,7 +13,7 @@ export default function Menu({ cart, tableId, startedAt, onAddItem, onChangeQty,
     <div className="pos">
       <div className="menu">
         <div className="tabs">
-          {Object.keys(CATEGORIES).map((cat) => (
+          {categoryNames.map((cat) => (
             <button
               key={cat}
               className={`tab ${cat === activeCat ? 'active' : ''}`}
@@ -23,10 +24,18 @@ export default function Menu({ cart, tableId, startedAt, onAddItem, onChangeQty,
           ))}
         </div>
         <div className="grid">
-          {CATEGORIES[activeCat].map((item) => (
-            <button key={item.id} className="tile" onClick={() => onAddItem(item)}>
+          {(categories[activeCat] || []).map((item) => (
+            <button
+              key={item.id}
+              className="tile"
+              style={item.color ? { background: item.color } : undefined}
+              onClick={() => onAddItem(item)}
+            >
               <span className="tile-name">{item.name}</span>
               <span className="tile-price">${item.price.toFixed(2)}</span>
+              {item.modifiers.length > 0 && (
+                <span className="tile-modifiers">+ {item.modifiers.join(', ')}</span>
+              )}
             </button>
           ))}
         </div>

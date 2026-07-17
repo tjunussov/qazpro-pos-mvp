@@ -1,4 +1,4 @@
-export const CATEGORIES = {
+const SEED_CATEGORIES = {
   Beverages: [
     { id: 'b1', name: 'Espresso', price: 2.5 },
     { id: 'b2', name: 'Latte', price: 3.5 },
@@ -25,7 +25,17 @@ export const CATEGORIES = {
   ],
 }
 
-export const CASHIERS = [
+export const seedCatalog = Object.entries(SEED_CATEGORIES).flatMap(([category, items]) =>
+  items.map((item) => ({ ...item, category, color: '', modifiers: [] }))
+)
+
+export const groupByCategory = (catalog) =>
+  catalog.reduce((acc, item) => {
+    ;(acc[item.category] ||= []).push(item)
+    return acc
+  }, {})
+
+export const seedStaff = [
   { id: 'c1', name: 'Aida' },
   { id: 'c2', name: 'Bek' },
   { id: 'c3', name: 'Nurlan' },
