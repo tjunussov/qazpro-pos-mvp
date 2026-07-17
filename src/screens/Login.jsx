@@ -1,24 +1,17 @@
 import { useState } from 'react'
-import { CASHIERS, PIN } from '../data'
+import { CASHIERS, PIN_LENGTH } from '../data'
 
 export default function Login({ onLogin }) {
   const [selected, setSelected] = useState(null)
   const [pin, setPin] = useState('')
-  const [error, setError] = useState(false)
 
   const press = (digit) => {
     const next = pin + digit
-    setError(false)
-    if (next.length < PIN.length) {
+    if (next.length < PIN_LENGTH) {
       setPin(next)
       return
     }
-    if (next === PIN) {
-      onLogin(selected)
-    } else {
-      setError(true)
-      setPin('')
-    }
+    onLogin(selected)
   }
 
   if (!selected) {
@@ -39,12 +32,11 @@ export default function Login({ onLogin }) {
   return (
     <div className="login-screen">
       <h1>Hi, {selected.name}</h1>
-      <div className={`pin-dots ${error ? 'error' : ''}`}>
-        {Array.from({ length: PIN.length }).map((_, i) => (
+      <div className="pin-dots">
+        {Array.from({ length: PIN_LENGTH }).map((_, i) => (
           <span key={i} className={`pin-dot ${i < pin.length ? 'filled' : ''}`} />
         ))}
       </div>
-      {error && <p className="pin-error">Wrong PIN, try again</p>}
       <div className="pin-pad">
         {['1', '2', '3', '4', '5', '6', '7', '8', '9', '', '0', '⌫'].map((k, i) =>
           k === '' ? (

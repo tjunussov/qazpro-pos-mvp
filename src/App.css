@@ -312,10 +312,6 @@
   gap: 14px;
 }
 
-.pin-dots.error .pin-dot {
-  background: #ff5c5c;
-}
-
 .pin-dot {
   width: 16px;
   height: 16px;
@@ -326,12 +322,6 @@
 
 .pin-dot.filled {
   background: #4d7cff;
-}
-
-.pin-error {
-  color: #ff8080;
-  margin: -12px 0 0;
-  font-size: 14px;
 }
 
 .pin-pad {

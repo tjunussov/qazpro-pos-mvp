@@ -31,7 +31,7 @@ export const CASHIERS = [
   { id: 'c3', name: 'Nurlan' },
 ]
 
-export const PIN = '1111'
+export const PIN_LENGTH = 4
 
 export const cartTotal = (cart) => cart.reduce((sum, i) => sum + i.price * i.qty, 0)
 
