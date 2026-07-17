@@ -830,6 +830,18 @@
   font-size: 18px;
 }
 
+.modifier-group h4 {
+  margin: 0 0 8px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #9aa0b4;
+}
+
+.modifier-group + .modifier-group h4 {
+  margin-top: 4px;
+}
+
 .modifier-list {
   display: flex;
   flex-direction: column;

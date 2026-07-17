@@ -12,7 +12,7 @@ export default function Menu({ cart, tableLabel, startedAt, categories, onAddIte
     : null
 
   const handleTileClick = (item) => {
-    if (item.modifiers.length > 0) {
+    if (item.modifierGroups.length > 0) {
       setPickerItem(item)
     } else {
       onAddItem(item)
@@ -48,8 +48,8 @@ export default function Menu({ cart, tableLabel, startedAt, categories, onAddIte
             >
               <span className="tile-name">{item.name}</span>
               <span className="tile-price">${item.price.toFixed(2)}</span>
-              {item.modifiers.length > 0 && (
-                <span className="tile-modifiers">+ {item.modifiers.map((m) => m.name).join(', ')}</span>
+              {item.modifierGroups.length > 0 && (
+                <span className="tile-modifiers">+ {item.modifierGroups.map((g) => g.label).join(', ')}</span>
               )}
             </button>
           ))}

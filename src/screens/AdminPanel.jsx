@@ -1,13 +1,40 @@
 import { useState } from 'react'
 
-const emptyForm = { name: '', category: '', price: '', color: '#2b2e3a', modifiers: '' }
+const emptyForm = { name: '', category: '', price: '', color: '#2b2e3a', modifierGroups: '' }
+
+const optionsToText = (options) =>
+  options.map((o) => (o.price ? `${o.name}:${o.price}` : o.name)).join(', ')
+
+const groupsToText = (groups) =>
+  groups.map((g) => `${g.label}(${g.type}): ${optionsToText(g.options)}`).join(' | ')
+
+const textToGroups = (text) =>
+  text
+    .split('|')
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .map((groupStr, i) => {
+      const m = groupStr.match(/^(.*?)\((single|multi)\)\s*:\s*(.*)$/)
+      if (!m) return null
+      const [, label, type, optsStr] = m
+      const options = optsStr
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean)
+        .map((o) => {
+          const [name, price] = o.split(':').map((s) => s.trim())
+          return { name, price: Number(price) || 0 }
+        })
+      return { id: `g${i}`, label: label.trim(), type, options }
+    })
+    .filter(Boolean)
 
 const toFormFields = (item) => ({
   name: item.name,
   category: item.category,
   price: String(item.price),
   color: item.color || '#2b2e3a',
-  modifiers: item.modifiers.map((m) => (m.price ? `${m.name}:${m.price}` : m.name)).join(', '),
+  modifierGroups: groupsToText(item.modifierGroups),
 })
 
 const fromFormFields = (fields) => ({
@@ -15,14 +42,7 @@ const fromFormFields = (fields) => ({
   category: fields.category.trim() || 'Uncategorized',
   price: Number(fields.price) || 0,
   color: fields.color,
-  modifiers: fields.modifiers
-    .split(',')
-    .map((m) => m.trim())
-    .filter(Boolean)
-    .map((m) => {
-      const [name, price] = m.split(':').map((s) => s.trim())
-      return { name, price: Number(price) || 0 }
-    }),
+  modifierGroups: textToGroups(fields.modifierGroups),
 })
 
 function CatalogTab({ catalog, onAddItem, onUpdateItem, onDeleteItem }) {
@@ -85,9 +105,9 @@ function CatalogTab({ catalog, onAddItem, onUpdateItem, onDeleteItem }) {
             onChange={(e) => setFields((f) => ({ ...f, color: e.target.value }))}
           />
           <input
-            placeholder="Modifiers, e.g. Salty, Extra Cheese:5"
-            value={fields.modifiers}
-            onChange={(e) => setFields((f) => ({ ...f, modifiers: e.target.value }))}
+            placeholder="Groups, e.g. Size(single): Small, Medium:0.5, Large:1 | Extras(multi): Salty, Extra Cheese:5"
+            value={fields.modifierGroups}
+            onChange={(e) => setFields((f) => ({ ...f, modifierGroups: e.target.value }))}
           />
           <button className="admin-save-btn" onClick={save} disabled={!fields.name.trim()}>Save</button>
           <button className="admin-cancel-btn" onClick={cancel}>Cancel</button>
@@ -112,7 +132,7 @@ function CatalogTab({ catalog, onAddItem, onUpdateItem, onDeleteItem }) {
               <td>{item.name}</td>
               <td>{item.category}</td>
               <td>${item.price.toFixed(2)}</td>
-              <td>{item.modifiers.map((m) => (m.price ? `${m.name} (+$${m.price})` : m.name)).join(', ') || '—'}</td>
+              <td>{item.modifierGroups.map((g) => `${g.label}: ${optionsToText(g.options)}`).join(' · ') || '—'}</td>
               <td className="admin-row-actions">
                 <button onClick={() => startEdit(item)}>Edit</button>
                 <button onClick={() => onDeleteItem(item.id)}>Delete</button>

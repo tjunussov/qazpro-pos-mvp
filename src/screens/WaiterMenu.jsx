@@ -49,7 +49,7 @@ export default function WaiterMenu({
   const rows = buildRows(allItems, cart, query)
 
   const handleRowTap = (item) => {
-    if (item.modifiers.length > 0) {
+    if (item.modifierGroups.length > 0) {
       setPickerItem(item)
     } else {
       onAddItem(item)
@@ -89,8 +89,8 @@ export default function WaiterMenu({
                   {inCart && cartLine.selectedModifiers?.length > 0 && (
                     <span className="waiter-row-mods"> · {cartLine.selectedModifiers.map((m) => m.name).join(', ')}</span>
                   )}
-                  {!inCart && catalogItem.modifiers.length > 0 && (
-                    <span className="tile-modifiers">+ {catalogItem.modifiers.map((m) => m.name).join(', ')}</span>
+                  {!inCart && catalogItem.modifierGroups.length > 0 && (
+                    <span className="tile-modifiers">+ {catalogItem.modifierGroups.map((g) => g.label).join(', ')}</span>
                   )}
                 </span>
                 <span className="waiter-item-price">
