@@ -130,7 +130,7 @@ export default function WaiterMenu({
           </button>
         ) : (
           <button className="kitchen-btn" disabled={!cart.length} onClick={onSendToKitchen}>
-            Send to Kitchen · ${total.toFixed(2)}
+            Send to Kitchen
           </button>
         )}
       </div>
