@@ -3,7 +3,8 @@ import './App.css'
 import Login from './screens/Login'
 import Menu from './screens/Menu'
 import Tables from './screens/Tables'
-import { addToCart, changeCartQty } from './data'
+import Payment from './screens/Payment'
+import { addToCart, changeCartQty, cartTotal } from './data'
 
 const initialTables = Array.from({ length: 7 }, (_, i) => ({ id: i + 1, cart: [] }))
 
@@ -12,6 +13,7 @@ export default function App() {
   const [cashier, setCashier] = useState(null)
   const [tables, setTables] = useState(initialTables)
   const [activeTableId, setActiveTableId] = useState(null)
+  const [checks, setChecks] = useState([])
 
   const activeTable = tables.find((t) => t.id === activeTableId)
 
@@ -32,6 +34,23 @@ export default function App() {
   const changeQty = (id, delta) => updateActiveCart((cart) => changeCartQty(cart, id, delta))
   const clearCart = () => updateActiveCart(() => [])
   const backToTables = () => setScreen('tables')
+  const goToPayment = () => setScreen('payment')
+
+  const confirmPayment = (method) => {
+    const check = {
+      id: Date.now(),
+      tableId: activeTableId,
+      items: activeTable.cart,
+      total: cartTotal(activeTable.cart),
+      payment: method,
+      cashierName: cashier.name,
+      time: new Date(),
+    }
+    setChecks((cs) => [check, ...cs])
+    updateActiveCart(() => [])
+    setActiveTableId(null)
+    setScreen('tables')
+  }
 
   if (screen === 'login') {
     return <Login onLogin={login} />
@@ -45,8 +64,13 @@ export default function App() {
         onChangeQty={changeQty}
         onClear={clearCart}
         onBack={backToTables}
+        onCheckout={goToPayment}
       />
     )
+  }
+
+  if (screen === 'payment' && activeTable) {
+    return <Payment total={cartTotal(activeTable.cart)} onConfirm={confirmPayment} />
   }
 
   return <Tables tables={tables} onSelectTable={selectTable} onViewHistory={() => console.log('history TBD')} />
